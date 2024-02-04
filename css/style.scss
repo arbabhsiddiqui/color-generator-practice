@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&display=swap');
 
 :root {
-  --base: #252527;
+  --base: #b8b8bb;
   --header-font: 'Raleway', sans-serif;
   --body-font: '';
 }
@@ -44,11 +44,14 @@ body {
     flex-direction: column;
     border-radius: 10px;
     padding: 0.5rem;
-
-    &:hover,
-    .active {
+    border: 3px solid transparent;
+    &.hover {
       cursor: pointer;
-      transform: translateY(-5px);
+    }
+    &.active {
+      border: 3px solid rgb(76, 249, 73);
+
+      // transform: translateY(-5px);
       box-shadow: 10px 10px 5px 0px rgba(0, 0, 0, 0.06);
     }
 
@@ -59,12 +62,10 @@ body {
       border-radius: 10px;
     }
     .color-name {
-      margin: 0.5rem;
-
-      span {
-        text-transform: uppercase;
-        color: #4c545f;
-      }
+      height: 90px;
+      margin-top: 10px;
+      text-transform: uppercase;
+      color: #4c545f;
     }
   }
 }

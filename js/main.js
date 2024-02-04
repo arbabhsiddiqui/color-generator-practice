@@ -1,6 +1,8 @@
 const button = document.querySelector('.btn');
+let cardWrapper = document.querySelector('.card__wrapper');
+let colorArray = [];
 
-const generateColor = () => {
+function newColor() {
   // hex range
   const hex = '0123456789ABCDEF';
   // new color
@@ -11,18 +13,31 @@ const generateColor = () => {
     newColor += hex[random];
   }
   return newColor;
-};
+}
 
-// const generateColorArray = () => {
-//   const colorArray = [];
-//   for (let i = 0; i < 3; i++) {
-//     let newColor = generateColor();
-//     colorArray.push(newColor);
-//   }
-//   return colorArray;
-// };
+function generateColor() {
+  colorArray = [];
+  console.log(colorArray);
+  for (let i = 0; i < 3; i++) {
+    let color = newColor();
+    colorArray.push(color);
+    cardWrapper.appendChild(colorPaletteCardUI(color));
+  }
+  generateGradient();
+}
 
-const colorPaletteCardUI = (color) => {
+function generateGradient() {
+  if (cardWrapper.children.length == 4) {
+    cardWrapper.removeChild(cardWrapper.lastElementChild);
+  }
+
+  let linerGradient = `linear-gradient(0deg, ${colorArray[0]},
+    ${colorArray.length >= 2 ? colorArray[1] : ' '}
+    ${colorArray.length == 3 ? ',' + colorArray[2] : ' '})`;
+  cardWrapper.appendChild(colorPaletteCardUI(linerGradient, false));
+}
+
+function colorPaletteCardUI(color, isClickAble = true) {
   // create outer element
   const item = document.createElement('div');
   item.classList.add('card__item');
@@ -47,34 +62,51 @@ const colorPaletteCardUI = (color) => {
   //   add color name to item
   item.appendChild(colorNameDiv);
 
-  item.addEventListener('click', () => {
-    console.log('click', item);
-  });
+  if (isClickAble) {
+    item.classList.add('active', 'hover');
+    item.addEventListener('click', handleCardClick);
+  }
 
   return item;
-};
+}
 
-const resetUI = () => {
+function handleCardClick() {
+  let selectedItem = this.children[1].textContent;
+
+  if (colorArray.includes(selectedItem)) {
+    if (colorArray.length <= 2) {
+      return;
+    }
+    this.classList.remove('active');
+    colorArray = colorArray.filter((item) => item != selectedItem);
+  } else {
+    this.classList.add('active');
+    colorArray.push(selectedItem);
+  }
+  generateGradient();
+  console.log(colorArray);
+}
+
+function resetUI() {
   let cardWrapper = document.querySelector('.card__wrapper');
   let child = cardWrapper.lastElementChild;
   while (child) {
     cardWrapper.removeChild(child);
     child = cardWrapper.lastElementChild;
   }
-};
+}
 
-const handleColorUpdate = () => {
-  let cardWrapper = document.querySelector('.card__wrapper');
-
+function handleColorUpdate() {
   resetUI();
+  generateColor();
+}
 
-  const colorArray = [];
-  for (let i = 0; i < 3; i++) {
-    let newColor = generateColor();
-    let x = colorPaletteCardUI(newColor);
-    colorArray.push(newColor);
-    cardWrapper.appendChild(x);
-  }
-};
+generateColor();
 
 button.addEventListener('click', handleColorUpdate);
+
+window.addEventListener('keydown', (e) => {
+  if (e.key == ' ') {
+    handleColorUpdate();
+  }
+});
